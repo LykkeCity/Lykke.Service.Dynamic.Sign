@@ -62,9 +62,9 @@ namespace Lykke.Service.Dash.Sign.Models
             return new ErrorResponse();
         }
 
-        public static ErrorResponse Create(ModelStateDictionary modelState)
+        public static ErrorResponse Create(string errorMessage, ModelStateDictionary modelState)
         {
-            var response = new ErrorResponse();
+            var response = new ErrorResponse(errorMessage);
 
             foreach (var state in modelState)
             {

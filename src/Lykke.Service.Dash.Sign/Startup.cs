@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace Lykke.Service.Dash.Sign
 {
@@ -40,23 +42,26 @@ namespace Lykke.Service.Dash.Sign
         {
             try
             {
-                services.AddMvc()
+                services
+                    .AddMvc()
                     .AddJsonOptions(options =>
                     {
-                        options.SerializerSettings.ContractResolver =
-                            new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                        options.SerializerSettings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
+                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     });
 
                 services.AddSwaggerGen(options =>
                 {
                     options.DefaultLykkeConfiguration("v1", "Dash.Sign API");
+                    options.DescribeAllEnumsAsStrings();
+                    options.DescribeStringEnumsInCamelCase();
                 });
 
                 var builder = new ContainerBuilder();
                 var appSettings = Configuration.LoadSettings<AppSettings>();
                 Log = CreateLogWithSlack(services, appSettings);
 
-                builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.SignService), Log));
+                builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.DashSignService), Log));
                 builder.Populate(services);
                 ApplicationContainer = builder.Build();
 
@@ -81,6 +86,7 @@ namespace Lykke.Service.Dash.Sign
                 app.UseLykkeMiddleware("DashSign", ex => new { Message = "Technical problem" });
 
                 app.UseMvc();
+
                 app.UseSwagger(c =>
                 {
                     c.PreSerializeFilters.Add((swagger, httpReq) => swagger.Host = httpReq.Host.Value);
@@ -169,7 +175,7 @@ namespace Lykke.Service.Dash.Sign
 
             aggregateLogger.AddLog(consoleLogger);
 
-            var dbLogConnectionStringManager = settings.Nested(x => x.SignService.Db.LogsConnString);
+            var dbLogConnectionStringManager = settings.Nested(x => x.DashSignService.Db.LogsConnString);
             var dbLogConnectionString = dbLogConnectionStringManager.CurrentValue;
 
             if (string.IsNullOrEmpty(dbLogConnectionString))

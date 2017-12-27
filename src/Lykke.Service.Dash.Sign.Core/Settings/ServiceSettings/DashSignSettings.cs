@@ -3,5 +3,6 @@
     public class DashSignSettings
     {
         public DbSettings Db { get; set; }
+        public string Network { get; set; }
     }
 }
