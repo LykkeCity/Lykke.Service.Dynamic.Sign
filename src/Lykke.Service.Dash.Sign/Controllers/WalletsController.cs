@@ -16,19 +16,16 @@ namespace Lykke.Service.Dash.Sign.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(WalletResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.InternalServerError)]
-        public IActionResult Post()
+        public WalletResponse Post()
         {
             var privateKey = _dashService.GetPrivateKey();
             var publicAddress = _dashService.GetPublicAddress(privateKey);
 
-            return Ok(new WalletResponse()
+            return new WalletResponse()
             {
                 PrivateKey = privateKey,
                 PublicAddress = publicAddress
-            });
+            };
         }
     }
 }

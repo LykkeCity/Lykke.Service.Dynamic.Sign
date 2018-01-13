@@ -1,33 +1,64 @@
 ﻿using Common.Log;
 using Lykke.Service.Dash.Sign.Services;
 using NBitcoin;
+using NBitcoin.Dash;
 using NBitcoin.Policy;
-using System;
-using System.Collections.Generic;
+using NBitcoin.JsonConverters;
+using Newtonsoft.Json;
 using System.Linq;
 using Xunit;
+using Lykke.Service.Dash.Sign.Models;
+using System.ComponentModel.DataAnnotations;
+using System;
+using Moq;
+using Lykke.Service.Dash.Sign.Core.Services;
 
 namespace Lykke.Service.Dash.Sign.Tests
 {
     public class DashServiceTests
     {
         private ILog _log;
+        public Network network = DashNetworks.Testnet;
+        public string from = "ygFX7C2QGD5YQG6EE9wGFddTxqMdUwELuB";
+        public string fromPrivateKey = "cV9nTtEJwgLe7pmSALvzrtQbjtP7zg8phhzDqgEURvWTEmSAVGjH";
+        public BitcoinAddress fromAddress;
+        public Key fromKey;
+        public string to = "ybEoFHH7mXyj89trADqP1iYBvU9UyjJdoV";
+        public BitcoinAddress toAddress;
+        public Transaction prevTx = Transaction.Parse("0100000001e2f23b2d1580d765bd969d1889d4700076688d3219f5686ac21573757f55fff50000000000ffffffff02b0ebffea0f0000001976a914daa46815060c0372118e52ccf970c4c54031055b88ac00e1f505000000001976a9146a4c6d1473b8a5bb8cfea0319d8dac1bc24e147088ac00000000");
+        public TransactionBuilder txBuilder = new TransactionBuilder();
+        public Transaction tx;
+        public ICoin[] spentCoins;
+        public DashService service;
+        public Mock<IServiceProvider> serviceProvider;
 
-        private DashService Init()
+        public DashServiceTests()
         {
             _log = new LogToMemory();
 
-            return new DashService(_log, "dash-testnet");
+            fromAddress = new BitcoinPubKeyAddress(from);
+            fromKey = Key.Parse(fromPrivateKey);
+            toAddress = new BitcoinPubKeyAddress(to);
+            tx = txBuilder
+                .AddCoins(prevTx.Outputs.AsCoins().Where(c => c.ScriptPubKey.GetDestinationAddress(network).ToString() == from).ToArray())
+                .Send(toAddress, Money.Coins(1))
+                .SetChange(fromAddress)
+                .SubtractFees()
+                .SendFees(txBuilder.EstimateFees(new FeeRate(Money.Satoshis(1024))))
+                .BuildTransaction(false);
+            spentCoins = txBuilder.FindSpentCoins(tx);
+            service = new DashService(_log, "dash-testnet");
+
+            serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(provider => provider.GetService(typeof(IDashService)))
+                .Returns(service);
         }
 
         [Fact]
         public void GetPrivateKeyShouldReturnData()
         {
-            // Arrange
-            var svc = Init();
-
             // Act
-            var key = svc.GetPrivateKey();
+            var key = service.GetPrivateKey();
 
             // Assert
             Assert.Equal(52, key.Length);
@@ -37,68 +68,102 @@ namespace Lykke.Service.Dash.Sign.Tests
         public void GetPublicAddressShouldReturnData()
         {
             // Arrange
-            var svc = Init();
-            var key = svc.GetPrivateKey();
+            var key = service.GetPrivateKey();
 
             // Act
-            var address = svc.GetPublicAddress(key);
+            var address = service.GetPublicAddress(key);
 
             // Assert
             Assert.Equal(34, address.Length);
         }
 
-        //[Fact]
-        //public void SignTransactionShouldReturnData()
-        //{
+        [Fact]
+        public void ShouldSignTransaction()
+        {
+            // Act
+            var signedTransactionHex = service.SignTransaction(tx, spentCoins, new[] { fromKey });
+            var signedTx = Transaction.Parse(signedTransactionHex);
+
+            // Assert
+            Assert.True(new TransactionBuilder()
+                .AddCoins(spentCoins)
+                .SetTransactionPolicy(new StandardTransactionPolicy { CheckFee = false })
+                .Verify(signedTx, out var errors));
+        }
+
+        [Fact]
+        public void ShouldSerializeDeserializeData()
+        {
             // Arrange
-            //var svc = Init();
-            //var destinationkey = svc.GetPrivateKey();
-            //var destinationAddress = BitcoinAddress.Create(svc.GetPublicAddress(destinationkey));
-            //var sourceKey = "cV9nTtEJwgLe7pmSALvzrtQbjtP7zg8phhzDqgEURvWTEmSAVGjH";
-            //var sourceAddress = BitcoinAddress.Create("ygFX7C2QGD5YQG6EE9wGFddTxqMdUwELuB");
-            //var sourceWallet = new BitcoinSecret(sourceKey);
+            var body = JsonConvert.SerializeObject(new
+            {
+                PrivateKeys = new[] { this.fromPrivateKey },
+                TransactionContext = Serializer.ToString((this.tx, this.spentCoins))
+            });
 
-            //var txu = Transaction.Parse("0100000001af85294571caa1078ed31c022355b48b0679f6e6fbd824b0d3152ecd22edb8e8010000006b4830450221009979cba5db1538ca87a8a207494003e87eaeb5b29ebcfdc9c7cdccd108a89ecd02202bd9e4234abd698a2ba394ddf147029227195911fc971b5fcca78ed7715dd97a012103ddfa734b57b3b33b0e09de7426d2bed45b37093d52741c937e0f5193dc7aa1a1feffffff025053f7f00f0000001976a914daa46815060c0372118e52ccf970c4c54031055b88ac8a3a2497c20000001976a914db2a5c35c77d858150185661525190d451459b6388ac73bc0000");
+            // Act
+            var request = JsonConvert.DeserializeObject<SignTransactionRequest>(body);
+            var validationResult = request.Validate(new ValidationContext(request, serviceProvider.Object, null));
 
-            //var coin = new Coin(
-            //    fromTxHash: new uint256("f5ff557f757315c26a68f519328d68760070d489189d96bd65d780152d3bf2e2"),
-            //    fromOutputIndex: 0,
-            //    amount: new Money(68467250000, MoneyUnit.Satoshi),
-            //    scriptPubKey: new Script("76a914daa46815060c0372118e52ccf970c4c54031055b88ac"));
+            // Assert;
+            Assert.Empty(validationResult);
+        }
 
-            //var coins = new List<Coin> {
-            //    coin
-            //};
+        [Fact]
+        public void ShouldNotValidate_IfTxIsNull()
+        {
+            // Arrange
+            var body = JsonConvert.SerializeObject(new
+            {
+                PrivateKeys = new[] { this.fromPrivateKey },
+                TransactionContext = Serializer.ToString(((Transaction)null, this.spentCoins))
+            });
 
-            //var txBuilder = new TransactionBuilder();
+            // Act
+            var request = JsonConvert.DeserializeObject<SignTransactionRequest>(body);
+            var validationResult = request.Validate(new ValidationContext(request, serviceProvider.Object, null));
 
-            //var tx = txBuilder
-            //    .AddCoins(txu)
-            //    .AddKeys(sourceWallet.PrivateKey)
-            //    .SendFees(new Money(0.001m, MoneyUnit.BTC))
-            //    .Send(destinationAddress, new Money(1m, MoneyUnit.BTC))
-            //    .SetChange(sourceAddress)
-            //    .BuildTransaction(false);
+            // Assert
+            Assert.NotEmpty(validationResult);
+            Assert.Contains(nameof(SignTransactionRequest.TransactionContext), validationResult.First().MemberNames);
+        }
 
-            //if (!txBuilder.Verify(tx, out TransactionPolicyError[] errorsTmp))
-            //{
-            //    var msg = String.Join(";", errorsTmp.Select(f => f.ToString()));
-            //}
+        [Fact]
+        public void ShouldNotValidate_IfPrivateKeysArrayIsNull()
+        {
+            // Arrange
+            var body = JsonConvert.SerializeObject(new
+            {
+                PrivateKeys = Array.Empty<string>(),
+                TransactionHex = Serializer.ToString((this.tx, (ICoin[])null))
+            });
 
-            //var transactionHex = tx.ToHex();
+            // Act
+            var request = JsonConvert.DeserializeObject<SignTransactionRequest>(body);
+            var validationResult = request.Validate(new ValidationContext(request, serviceProvider.Object, null));
 
-            //// Act
-            //var signedTransationHex = svc.SignTransaction(transactionHex, new string[] { sourceKey });
-            ////var verificationResult = svc.VerifyTransaction(signedTransationHex);
+            // Assert
+            Assert.NotEmpty(validationResult);
+            Assert.Contains(nameof(SignTransactionRequest.PrivateKeys), validationResult.First().MemberNames);
+        }
 
-            //var signedTx = Transaction.Parse(signedTransationHex);
-            //if (!txBuilder.Verify(signedTx, out TransactionPolicyError[] errors))
-            //{
-            //    var msg = String.Join(";", errors.Select(f => f.ToString()));
-            //}
+        [Fact]
+        public void ShouldNotValidate_IfKeyIsInvalid()
+        {
+            // Arrange
+            var body = JsonConvert.SerializeObject(new
+            {
+                PrivateKeys = new[] { "invalid" },
+                TransactionContext = Serializer.ToString((this.tx, this.spentCoins))
+            });
 
-            //// Assert
-            //Assert.NotEmpty(signedTransationHex);
-        //}
+            // Act
+            var request = JsonConvert.DeserializeObject<SignTransactionRequest>(body);
+            var validationResult = request.Validate(new ValidationContext(request, serviceProvider.Object, null));
+
+            // Assert
+            Assert.NotEmpty(validationResult);
+            Assert.Contains(nameof(SignTransactionRequest.PrivateKeys), validationResult.First().MemberNames);
+        }
     }
 }

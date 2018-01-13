@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Lykke.Service.Dash.Sign.Core\Lykke.Service.Dash.Sign.Core.csproj" />
     <ProjectReference Include="..\..\src\Lykke.Service.Dash.Sign.Services\Lykke.Service.Dash.Sign.Services.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Service.Dash.Sign\Lykke.Service.Dash.Sign.csproj" />
   </ItemGroup>
 
   <ItemGroup>
