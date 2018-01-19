@@ -27,34 +27,6 @@ namespace Lykke.Service.Dash.Sign.Models
 
         public Key[] Keys { get; private set; }
 
-        [OnDeserialized]
-        public void Init(StreamingContext streamingContext = default)
-        {
-            if (Tx == null && Coins == null)
-            {
-                try
-                {
-                    (Tx, Coins) = Serializer.ToObject<(Transaction, ICoin[])>(TransactionContext);
-                }
-                catch
-                {
-                    (Tx, Coins) = (null, null);
-                }
-            }
-
-            if (Keys == null)
-            {
-                try
-                {
-                    Keys = PrivateKeys.Select(k => Key.Parse(k)).ToArray();
-                }
-                catch
-                {
-                    Keys = null;
-                }
-            }
-        }
-
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var result = new List<ValidationResult>();
@@ -80,7 +52,29 @@ namespace Lykke.Service.Dash.Sign.Models
                 num++;
             }
 
-            Init();
+            if (Tx == null && Coins == null)
+            {
+                try
+                {
+                    (Tx, Coins) = Serializer.ToObject<(Transaction, ICoin[])>(TransactionContext);
+                }
+                catch
+                {
+                    (Tx, Coins) = (null, null);
+                }
+            }
+
+            if (Keys == null)
+            {
+                try
+                {
+                    Keys = PrivateKeys.Select(k => Key.Parse(k)).ToArray();
+                }
+                catch
+                {
+                    Keys = null;
+                }
+            }
 
             if (Tx == null || Coins == null || Coins.Length == 0)
             {

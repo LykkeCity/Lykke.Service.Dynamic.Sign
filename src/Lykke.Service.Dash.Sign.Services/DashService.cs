@@ -1,16 +1,10 @@
 ﻿using Common.Log;
-using Flurl.Http;
-using Lykke.Service.Dash.Sign.Core.Domain;
 using Lykke.Service.Dash.Sign.Core.Services;
-using Lykke.Service.Dash.Sign.Services.Helpers;
 using NBitcoin;
 using NBitcoin.Dash;
 using NBitcoin.Policy;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Lykke.Service.Dash.Sign.Services
 {
