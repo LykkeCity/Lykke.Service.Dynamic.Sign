@@ -1,13 +1,29 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using Lykke.Common.Api.Contract.Responses;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace Lykke.Service.Dash.Sign.Utils
 {
     public static class Extensions
     {
-        public static string DisplayNameInCamelCase(this ValidationContext context)
+        public static ErrorResponse ToErrorResponse(this ModelStateDictionary modelState)
         {
-            return $"{context.DisplayName.Substring(0, 1).ToLower()}{context.DisplayName.Substring(1)}";
+            var response = new ErrorResponse();
+
+            foreach (var state in modelState)
+            {
+                var messages = state.Value.Errors
+                    .Where(e => !string.IsNullOrWhiteSpace(e.ErrorMessage))
+                    .Select(e => e.ErrorMessage)
+                    .Concat(state.Value.Errors
+                        .Where(e => string.IsNullOrWhiteSpace(e.ErrorMessage))
+                        .Select(e => e.Exception.Message))
+                    .ToList();
+
+                response.ModelErrors.Add(state.Key, messages);
+            }
+
+            return response;
         }
     }
 }

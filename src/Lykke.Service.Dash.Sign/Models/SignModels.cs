@@ -6,7 +6,6 @@ using NBitcoin;
 using NBitcoin.JsonConverters;
 using Newtonsoft.Json;
 using Lykke.Service.Dash.Sign.Core.Services;
-using Lykke.Service.Dash.Sign.Utils;
 
 namespace Lykke.Service.Dash.Sign.Models
 {

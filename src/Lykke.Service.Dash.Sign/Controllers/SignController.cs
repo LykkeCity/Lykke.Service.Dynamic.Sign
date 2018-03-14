@@ -1,5 +1,6 @@
 ﻿using Lykke.Service.Dash.Sign.Core.Services;
 using Lykke.Service.Dash.Sign.Models;
+using Lykke.Service.Dash.Sign.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -21,7 +22,7 @@ namespace Lykke.Service.Dash.Sign.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ErrorResponse.Create("ValidationError", ModelState));
+                return BadRequest(ModelState.ToErrorResponse());
             }
 
             var hex = _dashService.SignTransaction(request.Tx, request.Coins, request.Keys);
@@ -30,6 +31,6 @@ namespace Lykke.Service.Dash.Sign.Controllers
             {
                 SignedTransaction = hex
             });
-        }
+        }        
     }
 }

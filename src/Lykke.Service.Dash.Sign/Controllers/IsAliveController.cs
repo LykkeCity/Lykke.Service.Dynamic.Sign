@@ -5,6 +5,7 @@ using Lykke.Service.Dash.Sign.Core.Services;
 using Lykke.Service.Dash.Sign.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Lykke.Common.Api.Contract.Responses;
 
 namespace Lykke.Service.Dash.Sign.Controllers
 {
@@ -26,7 +27,6 @@ namespace Lykke.Service.Dash.Sign.Controllers
         [HttpGet]
         [SwaggerOperation("IsAlive")]
         [ProducesResponseType(typeof(IsAliveResponse), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.InternalServerError)]
         public IActionResult Get()
         {
             var healthViloationMessage = _healthService.GetHealthViolationMessage();
