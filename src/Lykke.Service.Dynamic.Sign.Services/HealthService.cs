@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Lykke.Service.Dash.Sign.Core.Domain.Health;
-using Lykke.Service.Dash.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Core.Domain.Health;
+using Lykke.Service.Dynamic.Sign.Core.Services;
 
-namespace Lykke.Service.Dash.Sign.Services
+namespace Lykke.Service.Dynamic.Sign.Services
 {
     // NOTE: See https://lykkex.atlassian.net/wiki/spaces/LKEWALLET/pages/35755585/Add+your+app+to+Monitoring
     public class HealthService : IHealthService

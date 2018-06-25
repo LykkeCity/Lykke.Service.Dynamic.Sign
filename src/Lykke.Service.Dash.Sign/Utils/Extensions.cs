@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Linq;
 
-namespace Lykke.Service.Dash.Sign.Utils
+namespace Lykke.Service.Dynamic.Sign.Utils
 {
     public static class Extensions
     {

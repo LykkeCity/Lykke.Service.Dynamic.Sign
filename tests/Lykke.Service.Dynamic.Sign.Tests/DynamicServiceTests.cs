@@ -1,24 +1,24 @@
 ﻿using Common.Log;
-using Lykke.Service.Dash.Sign.Services;
+using Lykke.Service.Dynamic.Sign.Services;
 using NBitcoin;
-using NBitcoin.Dash;
+using NBitcoin.Dynamic;
 using NBitcoin.Policy;
 using NBitcoin.JsonConverters;
 using Newtonsoft.Json;
 using System.Linq;
 using Xunit;
-using Lykke.Service.Dash.Sign.Models;
+using Lykke.Service.Dynamic.Sign.Models;
 using System.ComponentModel.DataAnnotations;
 using System;
 using Moq;
-using Lykke.Service.Dash.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Core.Services;
 
-namespace Lykke.Service.Dash.Sign.Tests
+namespace Lykke.Service.Dynamic.Sign.Tests
 {
-    public class DashServiceTests
+    public class DynamicServiceTests
     {
         private ILog _log;
-        public Network network = DashNetworks.Testnet;
+        public Network network = DynamicNetworks.Testnet;
         public string from = "ygFX7C2QGD5YQG6EE9wGFddTxqMdUwELuB";
         public string fromPrivateKey = "cV9nTtEJwgLe7pmSALvzrtQbjtP7zg8phhzDqgEURvWTEmSAVGjH";
         public BitcoinAddress fromAddress;
@@ -29,10 +29,10 @@ namespace Lykke.Service.Dash.Sign.Tests
         public TransactionBuilder txBuilder = new TransactionBuilder();
         public Transaction tx;
         public ICoin[] spentCoins;
-        public DashService service;
+        public DynamicService service;
         public Mock<IServiceProvider> serviceProvider;
 
-        public DashServiceTests()
+        public DynamicServiceTests()
         {
             _log = new LogToMemory();
 
@@ -47,10 +47,10 @@ namespace Lykke.Service.Dash.Sign.Tests
                 .SendFees(txBuilder.EstimateFees(new FeeRate(Money.Satoshis(1024))))
                 .BuildTransaction(false);
             spentCoins = txBuilder.FindSpentCoins(tx);
-            service = new DashService(_log, "dash-testnet");
+            service = new DynamicService(_log, "dynamic-testnet");
 
             serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Setup(provider => provider.GetService(typeof(IDashService)))
+            serviceProvider.Setup(provider => provider.GetService(typeof(IDynamicService)))
                 .Returns(service);
         }
 

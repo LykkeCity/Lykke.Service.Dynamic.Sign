@@ -1,1 +1,1 @@
-# Lykke.Service.Dash.Sign
+# Lykke.Service.Dynamic.Sign

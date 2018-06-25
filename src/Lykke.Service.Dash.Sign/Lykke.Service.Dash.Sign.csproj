@@ -4,18 +4,18 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <Version>1.0.1</Version>
-    <AssemblyName>Lykke.Service.Dash.Sign</AssemblyName>
-    <RootNamespace>Lykke.Service.Dash.Sign</RootNamespace>
+    <AssemblyName>Lykke.Service.Dynamic.Sign</AssemblyName>
+    <RootNamespace>Lykke.Service.Dynamic.Sign</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp2.0\Lykke.Service.Dash.Sign.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netcoreapp2.0\Lykke.Service.Dynamic.Sign.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;1591</NoWarn>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp2.0\Lykke.Service.Dash.Sign.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netcoreapp2.0\Lykke.Service.Dynamic.Sign.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;1591</NoWarn>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -46,8 +46,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Lykke.Service.Dash.Sign.Core\Lykke.Service.Dash.Sign.Core.csproj" />
-    <ProjectReference Include="..\Lykke.Service.Dash.Sign.Services\Lykke.Service.Dash.Sign.Services.csproj" />
+    <ProjectReference Include="..\Lykke.Service.Dynamic.Sign.Core\Lykke.Service.Dynamic.Sign.Core.csproj" />
+    <ProjectReference Include="..\Lykke.Service.Dynamic.Sign.Services\Lykke.Service.Dynamic.Sign.Services.csproj" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">

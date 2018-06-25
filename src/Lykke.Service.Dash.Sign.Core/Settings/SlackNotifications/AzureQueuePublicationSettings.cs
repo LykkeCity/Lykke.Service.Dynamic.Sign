@@ -1,4 +1,4 @@
-namespace Lykke.Service.Dash.Sign.Core.Settings.SlackNotifications
+namespace Lykke.Service.Dynamic.Sign.Core.Settings.SlackNotifications
 {
     public class AzureQueuePublicationSettings
     {

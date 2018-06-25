@@ -7,9 +7,9 @@ using Common.Log;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
 using Lykke.Logs;
-using Lykke.Service.Dash.Sign.Core.Services;
-using Lykke.Service.Dash.Sign.Core.Settings;
-using Lykke.Service.Dash.Sign.Modules;
+using Lykke.Service.Dynamic.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Core.Settings;
+using Lykke.Service.Dynamic.Sign.Modules;
 using Lykke.SettingsReader;
 using Lykke.SlackNotification.AzureQueue;
 using Microsoft.AspNetCore.Builder;
@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
-namespace Lykke.Service.Dash.Sign
+namespace Lykke.Service.Dynamic.Sign
 {
     public class Startup
     {
@@ -52,7 +52,7 @@ namespace Lykke.Service.Dash.Sign
 
                 services.AddSwaggerGen(options =>
                 {
-                    options.DefaultLykkeConfiguration("v1", "Dash.Sign API");
+                    options.DefaultLykkeConfiguration("v1", "Dynamic.Sign API");
                     options.DescribeAllEnumsAsStrings();
                     options.DescribeStringEnumsInCamelCase();
                 });
@@ -61,7 +61,7 @@ namespace Lykke.Service.Dash.Sign
                 var appSettings = Configuration.LoadSettings<AppSettings>();
                 Log = CreateLogWithSlack(services, appSettings);
 
-                builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.DashSignService), Log));
+                builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.DynamicSignService), Log));
                 builder.Populate(services);
                 ApplicationContainer = builder.Build();
 
@@ -83,7 +83,7 @@ namespace Lykke.Service.Dash.Sign
                     app.UseDeveloperExceptionPage();
                 }
 
-                app.UseLykkeMiddleware("DashSign", ex => new { Message = "Technical problem" });
+                app.UseLykkeMiddleware("DynamicSign", ex => new { Message = "Technical problem" });
 
                 app.UseMvc();
 
@@ -175,7 +175,7 @@ namespace Lykke.Service.Dash.Sign
 
             aggregateLogger.AddLog(consoleLogger);
 
-            var dbLogConnectionStringManager = settings.Nested(x => x.DashSignService.Db.LogsConnString);
+            var dbLogConnectionStringManager = settings.Nested(x => x.DynamicSignService.Db.LogsConnString);
             var dbLogConnectionString = dbLogConnectionStringManager.CurrentValue;
 
             if (string.IsNullOrEmpty(dbLogConnectionString))
@@ -188,7 +188,7 @@ namespace Lykke.Service.Dash.Sign
                 throw new InvalidOperationException($"LogsConnString {dbLogConnectionString} is not filled in settings");
 
             var persistenceManager = new LykkeLogToAzureStoragePersistenceManager(
-                AzureTableStorage<LogEntity>.Create(dbLogConnectionStringManager, "DashSignLog", consoleLogger),
+                AzureTableStorage<LogEntity>.Create(dbLogConnectionStringManager, "DynamicSignLog", consoleLogger),
                 consoleLogger);
 
             // Creating slack notification service, which logs own azure queue processing messages to aggregate log

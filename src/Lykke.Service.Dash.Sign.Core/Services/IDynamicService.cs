@@ -1,8 +1,8 @@
 ﻿using NBitcoin;
 
-namespace Lykke.Service.Dash.Sign.Core.Services
+namespace Lykke.Service.Dynamic.Sign.Core.Services
 {
-    public interface IDashService
+    public interface IDynamicService
     {
         bool IsValidPrivateKey(string privateKey);
         string GetPrivateKey();

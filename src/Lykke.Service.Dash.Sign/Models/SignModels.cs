@@ -5,9 +5,9 @@ using System.Runtime.Serialization;
 using NBitcoin;
 using NBitcoin.JsonConverters;
 using Newtonsoft.Json;
-using Lykke.Service.Dash.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Core.Services;
 
-namespace Lykke.Service.Dash.Sign.Models
+namespace Lykke.Service.Dynamic.Sign.Models
 {
     [DataContract]
     public class SignTransactionRequest : IValidatableObject
@@ -29,7 +29,7 @@ namespace Lykke.Service.Dash.Sign.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var result = new List<ValidationResult>();
-            var dashService = (IDashService)validationContext.GetService(typeof(IDashService));
+            var dynamicService = (IDynamicService)validationContext.GetService(typeof(IDynamicService));
 
             if (PrivateKeys == null || !PrivateKeys.Any())
             {
@@ -41,7 +41,7 @@ namespace Lykke.Service.Dash.Sign.Models
             var num = 0;
             foreach (var key in PrivateKeys)
             {
-                if (!dashService.IsValidPrivateKey(key))
+                if (!dynamicService.IsValidPrivateKey(key))
                 {
                     result.Add(new ValidationResult(
                         $"{nameof(PrivateKeys)}.[{num}] is not a valid", 

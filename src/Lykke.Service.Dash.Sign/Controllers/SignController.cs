@@ -1,19 +1,19 @@
-﻿using Lykke.Service.Dash.Sign.Core.Services;
-using Lykke.Service.Dash.Sign.Models;
-using Lykke.Service.Dash.Sign.Utils;
+﻿using Lykke.Service.Dynamic.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Models;
+using Lykke.Service.Dynamic.Sign.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace Lykke.Service.Dash.Sign.Controllers
+namespace Lykke.Service.Dynamic.Sign.Controllers
 {
     [Route("api/sign")]
     public class SignController : Controller
     {
-        private readonly IDashService _dashService;
+        private readonly IDynamicService _dynamicService;
 
-        public SignController(IDashService dashService)
+        public SignController(IDynamicService dynamicService)
         {
-            _dashService = dashService;
+            _dynamicService = dynamicService;
         }
 
         [HttpPost]
@@ -25,7 +25,7 @@ namespace Lykke.Service.Dash.Sign.Controllers
                 return BadRequest(ModelState.ToErrorResponse());
             }
 
-            var hex = _dashService.SignTransaction(request.Tx, request.Coins, request.Keys);
+            var hex = _dynamicService.SignTransaction(request.Tx, request.Coins, request.Keys);
 
             return Ok(new SignResponse()
             {

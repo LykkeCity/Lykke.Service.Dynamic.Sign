@@ -1,25 +1,25 @@
-﻿using Lykke.Service.Dash.Sign.Core.Services;
-using Lykke.Service.Dash.Sign.Models;
+﻿using Lykke.Service.Dynamic.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace Lykke.Service.Dash.Sign.Controllers
+namespace Lykke.Service.Dynamic.Sign.Controllers
 {
     [Route("api/wallets")]
     public class WalletsController : Controller
     {
-        private readonly IDashService _dashService;
+        private readonly IDynamicService _dynamicService;
 
-        public WalletsController(IDashService dashService)
+        public WalletsController(IDynamicService dynamicService)
         {
-            _dashService = dashService;
+            _dynamicService = dynamicService;
         }
 
         [HttpPost]
         public WalletResponse Post()
         {
-            var privateKey = _dashService.GetPrivateKey();
-            var publicAddress = _dashService.GetPublicAddress(privateKey);
+            var privateKey = _dynamicService.GetPrivateKey();
+            var publicAddress = _dynamicService.GetPublicAddress(privateKey);
 
             return new WalletResponse()
             {

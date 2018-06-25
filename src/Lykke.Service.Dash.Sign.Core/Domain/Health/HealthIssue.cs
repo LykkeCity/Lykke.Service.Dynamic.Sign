@@ -1,4 +1,4 @@
-﻿namespace Lykke.Service.Dash.Sign.Core.Domain.Health
+﻿namespace Lykke.Service.Dynamic.Sign.Core.Domain.Health
 {
     public class HealthIssue
     {

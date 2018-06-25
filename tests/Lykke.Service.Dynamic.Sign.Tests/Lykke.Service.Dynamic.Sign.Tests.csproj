@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lykke.Service.Dash.Sign.Core\Lykke.Service.Dash.Sign.Core.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Service.Dash.Sign.Services\Lykke.Service.Dash.Sign.Services.csproj" />
-    <ProjectReference Include="..\..\src\Lykke.Service.Dash.Sign\Lykke.Service.Dash.Sign.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Service.Dynamic.Sign.Core\Lykke.Service.Dynamic.Sign.Core.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Service.Dynamic.Sign.Services\Lykke.Service.Dynamic.Sign.Services.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Service.Dynamic.Sign\Lykke.Service.Dynamic.Sign.csproj" />
   </ItemGroup>
 
   <ItemGroup>

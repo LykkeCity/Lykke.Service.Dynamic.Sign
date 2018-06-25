@@ -1,18 +1,18 @@
 ﻿using Autofac;
 using Common.Log;
-using Lykke.Service.Dash.Sign.Core.Services;
-using Lykke.Service.Dash.Sign.Core.Settings.ServiceSettings;
-using Lykke.Service.Dash.Sign.Services;
+using Lykke.Service.Dynamic.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Core.Settings.ServiceSettings;
+using Lykke.Service.Dynamic.Sign.Services;
 using Lykke.SettingsReader;
 
-namespace Lykke.Service.Dash.Sign.Modules
+namespace Lykke.Service.Dynamic.Sign.Modules
 {
     public class ServiceModule : Module
     {
-        private readonly IReloadingManager<DashSignSettings> _settings;
+        private readonly IReloadingManager<DynamicSignSettings> _settings;
         private readonly ILog _log;
 
-        public ServiceModule(IReloadingManager<DashSignSettings> settings, ILog log)
+        public ServiceModule(IReloadingManager<DynamicSignSettings> settings, ILog log)
         {
             _settings = settings;
             _log = log;
@@ -34,8 +34,8 @@ namespace Lykke.Service.Dash.Sign.Modules
             builder.RegisterType<ShutdownManager>()
                 .As<IShutdownManager>();
 
-            builder.RegisterType<DashService>()
-                .As<IDashService>()
+            builder.RegisterType<DynamicService>()
+                .As<IDynamicService>()
                 .SingleInstance()
                 .WithParameter("network", _settings.CurrentValue.Network);
         }

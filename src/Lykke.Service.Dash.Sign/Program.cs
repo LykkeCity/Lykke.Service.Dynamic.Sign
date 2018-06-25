@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 
-namespace Lykke.Service.Dash.Sign
+namespace Lykke.Service.Dynamic.Sign
 {
     internal sealed class Program
     {

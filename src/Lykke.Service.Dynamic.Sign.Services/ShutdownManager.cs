@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Common.Log;
-using Lykke.Service.Dash.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Core.Services;
 
-namespace Lykke.Service.Dash.Sign.Services
+namespace Lykke.Service.Dynamic.Sign.Services
 {
     // NOTE: Sometimes, shutdown process should be expressed explicitly. 
     // If this is your case, use this class to manage shutdown.

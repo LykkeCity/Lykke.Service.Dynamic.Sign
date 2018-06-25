@@ -1,22 +1,22 @@
 ﻿using Common.Log;
-using Lykke.Service.Dash.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Core.Services;
 using NBitcoin;
-using NBitcoin.Dash;
+using NBitcoin.Dynamic;
 using NBitcoin.Policy;
 using System;
 using System.Linq;
 
-namespace Lykke.Service.Dash.Sign.Services
+namespace Lykke.Service.Dynamic.Sign.Services
 {
-    public class DashService : IDashService
+    public class DynamicService : IDynamicService
     {
         private readonly ILog _log;
         private readonly Network _network;
 
-        public DashService(ILog log,
+        public DynamicService(ILog log,
             string network)
         {
-            DashNetworks.Register();
+            DynamicNetworks.Register();
 
             _log = log;
             _network = Network.GetNetwork(network);

@@ -1,4 +1,4 @@
-﻿namespace Lykke.Service.Dash.Sign.Models
+﻿namespace Lykke.Service.Dynamic.Sign.Models
 {
     public class WalletResponse
     {

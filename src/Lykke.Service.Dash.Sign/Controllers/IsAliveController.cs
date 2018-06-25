@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using Lykke.Service.Dash.Sign.Core.Services;
-using Lykke.Service.Dash.Sign.Models;
+using Lykke.Service.Dynamic.Sign.Core.Services;
+using Lykke.Service.Dynamic.Sign.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Lykke.Common.Api.Contract.Responses;
 
-namespace Lykke.Service.Dash.Sign.Controllers
+namespace Lykke.Service.Dynamic.Sign.Controllers
 {
     // NOTE: See https://lykkex.atlassian.net/wiki/spaces/LKEWALLET/pages/35755585/Add+your+app+to+Monitoring
     [Route("api/[controller]")]
