@@ -49,6 +49,12 @@
     <ProjectReference Include="..\Lykke.Service.Dynamic.Sign.Core\Lykke.Service.Dynamic.Sign.Core.csproj" />
     <ProjectReference Include="..\Lykke.Service.Dynamic.Sign.Services\Lykke.Service.Dynamic.Sign.Services.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="NBitcoin.Dynamic">
+      <HintPath>..\..\..\NBitcoin.Dynamic\NBitcoin.Dynamic\bin\Debug\netcoreapp2.0\NBitcoin.Dynamic.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <ItemGroup>
