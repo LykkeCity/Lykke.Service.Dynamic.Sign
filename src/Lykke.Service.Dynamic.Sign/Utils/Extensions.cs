@@ -19,8 +19,14 @@ namespace Lykke.Service.Dynamic.Sign.Utils
                         .Where(e => string.IsNullOrWhiteSpace(e.ErrorMessage))
                         .Select(e => e.Exception.Message))
                     .ToList();
-
-                response.ModelErrors.Add(state.Key, messages);
+                try
+                {
+                    response.ModelErrors.Add(state.Key, messages);
+                }
+                catch
+                {
+                    response.AddModelError(state.Key, "invalid signature");
+                }
             }
 
             return response;

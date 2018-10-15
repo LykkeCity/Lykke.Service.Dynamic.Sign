@@ -31,6 +31,6 @@ namespace Lykke.Service.Dynamic.Sign.Controllers
             {
                 SignedTransaction = hex
             });
-        }        
+        }
     }
 }

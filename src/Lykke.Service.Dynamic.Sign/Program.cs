@@ -24,7 +24,7 @@ namespace Lykke.Service.Dynamic.Sign
             {
                 var host = new WebHostBuilder()
                     .UseKestrel()
-                    .UseUrls("http://*:5001")
+                    .UseUrls("http://*:5002")
                     .UseContentRoot(Directory.GetCurrentDirectory())
                     .UseStartup<Startup>()
                     .UseApplicationInsights()
