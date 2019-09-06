@@ -8,22 +8,13 @@ namespace Lykke.Service.Dynamic.Sign.Utils
     {
         public static ErrorResponse ToErrorResponse(this ModelStateDictionary modelState)
         {
-            var response = new ErrorResponse();
-
-            foreach (var state in modelState)
+            return new ErrorResponse()
             {
-                var messages = state.Value.Errors
-                    .Where(e => !string.IsNullOrWhiteSpace(e.ErrorMessage))
-                    .Select(e => e.ErrorMessage)
-                    .Concat(state.Value.Errors
-                        .Where(e => string.IsNullOrWhiteSpace(e.ErrorMessage))
-                        .Select(e => e.Exception.Message))
-                    .ToList();
-
-                response.ModelErrors.Add(state.Key, messages);
-            }
-
-            return response;
+                ModelErrors = modelState.ToDictionary(
+                    state => state.Key,
+                    state => state.Value.Errors.Select(e => e.Exception?.Message ?? e.ErrorMessage).ToList()
+                )
+            };
         }
     }
 }
